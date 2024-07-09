@@ -34,7 +34,7 @@ const polygonsCollection: any = {
             [76.36447573235478, 10.00697662044216],
             [76.36409068424797, 10.00685442290738],
             [76.364002417407, 10.007096298394828]
-            ],
+          ],
         ],
         type: "Polygon",
       },
@@ -55,7 +55,7 @@ const polygonsCollection: any = {
             [76.35947573235478, 10.00697662044216],
             [76.35909068424797, 10.00685442290738],
             [76.359002417407, 10.007096298394828]
-            ],
+          ],
         ],
         type: "Polygon",
       },
@@ -76,7 +76,7 @@ const polygonsCollection: any = {
             [76.365475732, 10.00697662044216],
             [76.36509068, 10.00685442290738],
             [76.3650024, 10.007096298394828]
-            ],
+          ],
         ],
         type: "Polygon",
       },
@@ -97,7 +97,7 @@ const polygonsCollection: any = {
             [76.35847573235478, 10.00697662044216],
             [76.35809068424797, 10.00685442290738],
             [76.358002417407, 10.007096298394828]
-            ],
+          ],
         ],
         type: "Polygon",
       },
@@ -127,7 +127,6 @@ function App() {
       map.current = new Map({
         container: mapContainer.current as HTMLElement,
         style: `https://api.maptiler.com/maps/bright-v2-light/style.json?key=${MAPTILER_KEY}`,
-        // style: `https://demotiles.maplibre.org/style.json`,
         center: [76.364002417407, 10.007096298394828],
         zoom: 18,
       });
@@ -139,7 +138,7 @@ function App() {
           data: polygonsCollection,
         });
   
-        // Polygon Layer
+        // // Polygon Layer
         map.current?.addLayer({
           id: "polygonLayer",
           type: "fill",
@@ -166,7 +165,8 @@ function App() {
         if (!map.current?.getLayer("custom-threejs-layer")) {
           map.current?.addLayer(content3DLayer);
         }
-  
+
+        //TBA: Is webgl used anywhere?
         wrapper.current = new CustomThreeJSWrapper(
           map.current as any,
           map.current?.getCanvas().getContext("webgl") as WebGLRenderingContext
@@ -184,10 +184,11 @@ function App() {
   
           const modelPosition = projectToWorld(centroid);
 
-          const vertex1 = projectToWorld(coordinates[0][0]);
-          const vertex2 = projectToWorld(coordinates[0][1]);
-          const angle = vertex1.angleTo(vertex2);
-          console.log(angle);
+          // Not used anywhere. To be removed.
+          // const vertex1 = projectToWorld(coordinates[0][0]);
+          // const vertex2 = projectToWorld(coordinates[0][1]);
+          // const angle = vertex1.angleTo(vertex2);
+          // console.log(angle);
   
           if (feature.properties.image === "") {
             // Add Text instead of Image
@@ -212,37 +213,17 @@ function App() {
   
             // Update the rendering:
             myText.sync(() => {
-              
-            // const geojsonbbox = turf.bbox(polygon);
-  
-            // const bbox1 = new THREE.Box3(projectToWorld([geojsonbbox[2], geojsonbbox[3]]), projectToWorld([geojsonbbox[0], geojsonbbox[1]]));
-            // const bbox2 = new THREE.Box3().setFromObject(myText);
+              myText.scale.set(0.00095, 0.00095, 1); // Scale calculationn hard coded for now
+              myText.position.set(
+                textPosition.x,
+                textPosition.y,
+                feature.properties.height > 0 ? 0.2 : 0.01
+              );
+              myText.rotateZ(Math.PI/9);
 
-            // console.log('1', geojsonbbox)
-  
-            // const size1 = new THREE.Vector3();
-            // bbox1.getSize(size1);
-            // size1.setZ(1);
-  
-            // const size2 = new THREE.Vector3();
-            // bbox2.getSize(size2);
-            // size2.setZ(1);
-  
-            // const ratio = size1.divide( size2 );
-            // console.log('ratio: ',size1, size2, ratio);
-            // myText.scale.set(myText.scale.x * (ratio.x), myText.scale.y * (ratio.y), myText.scale.z * (ratio.z));
+              items.push(myText);
 
-            myText.scale.set(0.00095, 0.00095, 1); // Scale calculationn hard coded for now
-            myText.position.set(
-              textPosition.x,
-              textPosition.y,
-              feature.properties.height > 0 ? 0.2 : 0.01
-            );
-            myText.rotateZ(Math.PI/9);
-
-            items.push(myText);
-
-            map.current!.repaint = true;
+              map.current!.repaint = true;
             });
           } else {
             // Load Texture
@@ -302,31 +283,42 @@ function App() {
   
           wrapper.current?.repaint();
         });
-  
+
+        // This logic ensures that items on the map are correctly oriented based 
+        // on the direction the map is facing.
         let currentstate = 1;
         // Getting Bearing of Map when moving camera...
         map.current?.on("move", () => {
-          // console.log("Bearing:", map.current?.getBearing());
-          // console.log("Map Data:", wrapper.current?.scene.children[0]);
+          // Get the current bearing (direction) of the map
           const bearing = map.current?.getBearing() as number;
+
+          // If bearing is between -90 and 90 degrees (generally north)
           if (bearing < 90 && bearing > -90) {
+
+            // If current state is not 1 (map was not previously facing north)
             if (currentstate != 1) {
+
+              // Rotate each item by 180 degrees on the Z-axis
               for (let index = 0; index < items.length; index++) {
                 const element = items[index];
                 element.rotateZ(Math.PI);
               }
-              // obj.translateX(-tex.image.height*2);
             }
+            // Update current state to 1
             currentstate = 1
           }
           else {
+            // If bearing is outside -90 to 90 degrees (generally south)
+            // If current state is not 2 (map was not previously facing south)
             if (currentstate != 2) {
+
+              // Rotate each item by 180 degrees on the Z-axis
               for (let index = 0; index < items.length; index++) {
                 const element = items[index];
                 element.rotateZ(Math.PI);
               }
-              // obj.translateX(-tex.image.height*2);
             }
+            // Update current state to 2
             currentstate = 2;
           }
         });
