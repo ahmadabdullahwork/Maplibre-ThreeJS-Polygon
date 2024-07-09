@@ -1836,6 +1836,13 @@
     fflate "~0.8.2"
     meshoptimizer "~0.18.1"
 
+"@types/turf@^3.5.32":
+  version "3.5.32"
+  resolved "https://registry.npmjs.org/@types/turf/-/turf-3.5.32.tgz"
+  integrity sha512-2Rtv0EIG7Tx1CC2ASzCPw63ugCwrqJCFqNL/Gk9QYE5iIyd+0/S/TlPTgQ+qeQC8NCEn/TncUeZp+aM9cg68rg==
+  dependencies:
+    "@types/geojson" "*"
+
 "@types/webxr@*":
   version "0.5.16"
   resolved "https://registry.npmjs.org/@types/webxr/-/webxr-0.5.16.tgz"
