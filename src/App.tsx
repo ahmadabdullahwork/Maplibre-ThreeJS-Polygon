@@ -1,141 +1,164 @@
 import { useEffect, useRef } from "react";
-import maplibregl, { CustomLayerInterface, Map } from "maplibre-gl";
+import maplibregl, { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import CustomThreeJSWrapper from "./CustomThreeJsWrapper/CustomThreeJsWrapper";
-import * as turf from "@turf/turf";
-import * as THREE from "three";
-import { projectToWorld } from "./CustomThreeJsWrapper/utility/utils";
-import { Text } from "troika-three-text";
 
-interface Content3DLayer extends CustomLayerInterface {
-  id: string;
-  type: "custom";
-  renderingMode: "3d";
-  render(): void;
-}
-
-
-const polygonsCollection: any = {
-  type: "FeatureCollection",
-  features: [
+const emporiumMallPolygon: any = {
+  "type": "FeatureCollection",
+  "features": [
     {
-      type: "Feature",
-      properties: {
-        image: "./sk.png",
-        label: "Demo Label 1",
+      "type": "Feature",
+      "properties": {
+        label: "Emporium Mall",
         color: "#89CFF0",
-        height: 0,
+        height: 20,
       },
-      geometry: {
-        coordinates: [
+      "geometry": {
+        "coordinates": [
           [
-            [76.364002417407, 10.007096298394828],
-            [76.36437211475851, 10.007226054442015],
-            [76.36447573235478, 10.00697662044216],
-            [76.36409068424797, 10.00685442290738],
-            [76.364002417407, 10.007096298394828]
-          ],
+            [
+              74.26533468143214,
+              31.467539815138267
+            ],
+            [
+              74.264964236532,
+              31.467469398658352
+            ],
+            [
+              74.26470970673847,
+              31.467409396546202
+            ],
+            [
+              74.26475792976137,
+              31.46721011873464
+            ],
+            [
+              74.26482537378325,
+              31.467064447795195
+            ],
+            [
+              74.26508996902373,
+              31.467103743119523
+            ],
+            [
+              74.26486720797894,
+              31.467032852165815
+            ],
+            [
+              74.26488585088347,
+              31.466877349041567
+            ],
+            [
+              74.26499518936805,
+              31.46655492538575
+            ],
+            [
+              74.26520153424113,
+              31.466586750037152
+            ],
+            [
+              74.26523372810126,
+              31.46646584027455
+            ],
+            [
+              74.26502152519211,
+              31.466359565000886
+            ],
+            [
+              74.26514735095427,
+              31.466089169188976
+            ],
+            [
+              74.26576180994348,
+              31.466343515316538
+            ],
+            [
+              74.26578946804682,
+              31.466289108143016
+            ],
+            [
+              74.26705925857442,
+              31.466591212480168
+            ],
+            [
+              74.26698188824855,
+              31.466842715150705
+            ],
+            [
+              74.2670540844907,
+              31.466857222891022
+            ],
+            [
+              74.26682782721565,
+              31.467671342021276
+            ],
+            [
+              74.26674381813584,
+              31.46764660957639
+            ],
+            [
+              74.26666227693192,
+              31.467887841875637
+            ],
+            [
+              74.26638888364906,
+              31.46783904371958
+            ],
+            [
+              74.26636563434238,
+              31.46791299827028
+            ],
+            [
+              74.26608277135364,
+              31.467836967817064
+            ],
+            [
+              74.2658007066268,
+              31.467827703139434
+            ],
+            [
+              74.26551075870125,
+              31.467772701574944
+            ],
+            [
+              74.26552477251144,
+              31.46773999473821
+            ],
+            [
+              74.26536086156855,
+              31.467681341873742
+            ],
+            [
+              74.26533468143214,
+              31.467539815138267
+            ]
+          ]
         ],
-        type: "Polygon",
-      },
-    },
-    {
-      type: "Feature",
-      properties: {
-        image: "./sk.png",
-        label: "Demo Label 1",
-        color: "#87cefa",
-        height: 3,
-      },
-      geometry: {
-        coordinates: [
-          [
-            [76.359002417407, 10.007096298394828],
-            [76.35937211475851, 10.007226054442015],
-            [76.35947573235478, 10.00697662044216],
-            [76.35909068424797, 10.00685442290738],
-            [76.359002417407, 10.007096298394828]
-          ],
-        ],
-        type: "Polygon",
-      },
-    },
-    {
-      type: "Feature",
-      properties: {
-        image: "",
-        label: "Demo Label 2",
-        color: "#2dcabd",
-        height: 0,
-      },
-      geometry: {
-        coordinates: [
-          [
-            [76.3650024, 10.007096298394828],
-            [76.365372114, 10.007226054442015],
-            [76.365475732, 10.00697662044216],
-            [76.36509068, 10.00685442290738],
-            [76.3650024, 10.007096298394828]
-          ],
-        ],
-        type: "Polygon",
-      },
-    },
-    {
-      type: "Feature",
-      properties: {
-        image: "",
-        label: "Demo Label 2",
-        color: "#2dcabd",
-        height: 6,
-      },
-      geometry: {
-        coordinates: [
-          [
-            [76.358002417407, 10.007096298394828],
-            [76.35837211475851, 10.007226054442015],
-            [76.35847573235478, 10.00697662044216],
-            [76.35809068424797, 10.00685442290738],
-            [76.358002417407, 10.007096298394828]
-          ],
-        ],
-        type: "Polygon",
-      },
-    },
-  ],
-};
+        "type": "Polygon"
+      }
+    }
+  ]
+}
 
 const MAPTILER_KEY = "sjn0iuxKyGPkOiVCMU8R";
 
 function App() {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maplibregl.Map | null>();
-  const wrapper = useRef<CustomThreeJSWrapper | null>(null);
-
-  const content3DLayer: Content3DLayer = {
-    id: "custom-threejs-layer",
-    type: "custom",
-    renderingMode: "3d",
-
-    render() {
-      if (wrapper.current) wrapper.current.update();
-    },
-  };
 
   useEffect(() => {
     if (!map.current) {
       map.current = new Map({
         container: mapContainer.current as HTMLElement,
         style: `https://api.maptiler.com/maps/bright-v2-light/style.json?key=${MAPTILER_KEY}`,
-        center: [76.364002417407, 10.007096298394828],
-        zoom: 18,
+        center: [74.2652867, 31.4671306],
+        zoom: 16,
       });
   
       map.current.on("load", function () {  
         // Polygon Source
         map.current?.addSource("polygonSource", {
           type: "geojson",
-          data: polygonsCollection,
+          data: emporiumMallPolygon,
         });
   
         // // Polygon Layer
@@ -161,174 +184,8 @@ function App() {
             "fill-extrusion-opacity": 1,
           },
         });
-
-        if (!map.current?.getLayer("custom-threejs-layer")) {
-          map.current?.addLayer(content3DLayer);
-        }
-
-        //TBA: Is webgl used anywhere?
-        wrapper.current = new CustomThreeJSWrapper(
-          map.current as any,
-          map.current?.getCanvas().getContext("webgl") as WebGLRenderingContext
-        );
-  
-        console.log("Wrapper:", wrapper.current);
-  
-        let items: any[] = [];
-        // Add Texture at Center
-        polygonsCollection.features.map((feature: any) => {
-          let coordinates = feature.geometry.coordinates;
-          // Calculate the centroid of the polygon
-          const polygon = turf.polygon(coordinates);
-          const centroid = turf.center(polygon).geometry.coordinates;
-  
-          const modelPosition = projectToWorld(centroid);
-
-          // Not used anywhere. To be removed.
-          // const vertex1 = projectToWorld(coordinates[0][0]);
-          // const vertex2 = projectToWorld(coordinates[0][1]);
-          // const angle = vertex1.angleTo(vertex2);
-          // console.log(angle);
-  
-          if (feature.properties.image === "") {
-            // Add Text instead of Image
-            // Add Text as alternative of Image
-            const myText = new Text();
-  
-            // Set properties to configure:
-            myText.text = feature.properties.label;
-            myText.fontSize = 100;
-            const textPosition = projectToWorld(centroid);
-            console.log("Text Position:", textPosition);
-            myText.color = 0xff0000;
-            myText.rotation.x = Math.PI;
-            myText.rotation.y = Math.PI;
-  
-            // Setting Anchor at Center of Text
-            myText.anchorX = "50%";
-            myText.anchorY = "50%";
-            console.log("Text:", myText);
-
-            wrapper.current?.add(myText);
-  
-            // Update the rendering:
-            myText.sync(() => {
-              myText.scale.set(0.00095, 0.00095, 1); // Scale calculationn hard coded for now
-              myText.position.set(
-                textPosition.x,
-                textPosition.y,
-                feature.properties.height > 0 ? 0.2 : 0.01
-              );
-              myText.rotateZ(Math.PI/9);
-
-              items.push(myText);
-
-              map.current!.repaint = true;
-            });
-          } else {
-            // Load Texture
-            const textureLoader = new THREE.TextureLoader();
-            textureLoader.load(feature.properties.image, (texture: THREE.Texture) => {
-  
-            // Create a plane geometry and material with the loaded texture
-            const geometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
-            geometry.computeBoundingBox();
-            const material = new THREE.MeshStandardMaterial({ map: texture,
-              transparent: true, // Enable transparency
-              opacity: 1  });
-            const plane = new THREE.Mesh(geometry, material);
-
-            const group = new THREE.Group();
-            const childContainer = new THREE.Group();
-            childContainer.add(plane);
-            childContainer.rotateZ(Math.PI);
-            childContainer.rotateZ(Math.PI/9);
-            childContainer.updateMatrixWorld();
-
-            group.add(childContainer);
-
-            const geojsonbbox = turf.bbox(polygon);
-  
-            const bbox1 = new THREE.Box3(projectToWorld([geojsonbbox[2], geojsonbbox[3]]), projectToWorld([geojsonbbox[0], geojsonbbox[1]]));
-            const bbox2 = new THREE.Box3().setFromObject(plane);
-
-            console.log('1')
-  
-            const size1 = new THREE.Vector3();
-            bbox1.getSize(size1);
-            size1.setZ(1);
-  
-            const size2 = new THREE.Vector3();
-            bbox2.getSize(size2);
-            size2.setZ(1);
-  
-            const ratio = size1.divide( size2 );
-
-            const ratioCopy = ratio.clone().multiplyScalar(0.85);
-  
-            plane.scale.set(plane.scale.x * (ratioCopy.x), plane.scale.y * (ratioCopy.y), plane.scale.z * (ratioCopy.z));
-  
-            // // Set the position of the plane to the centroid
-            group.position.set(
-              modelPosition.x,
-              modelPosition.y,
-              feature.properties.height > 0 ? 0.08 : 0.01
-            );
-            items.push(group);
-
-  
-            wrapper.current?.add(group);
-            });
-          }
-  
-          wrapper.current?.repaint();
-        });
-
-        // This logic ensures that items on the map are correctly oriented based 
-        // on the direction the map is facing.
-        let currentstate = 1;
-        // Getting Bearing of Map when moving camera...
-        map.current?.on("move", () => {
-          // Get the current bearing (direction) of the map
-          const bearing = map.current?.getBearing() as number;
-
-          // If bearing is between -90 and 90 degrees (generally north)
-          if (bearing < 90 && bearing > -90) {
-
-            // If current state is not 1 (map was not previously facing north)
-            if (currentstate != 1) {
-
-              // Rotate each item by 180 degrees on the Z-axis
-              for (let index = 0; index < items.length; index++) {
-                const element = items[index];
-                element.rotateZ(Math.PI);
-              }
-            }
-            // Update current state to 1
-            currentstate = 1
-          }
-          else {
-            // If bearing is outside -90 to 90 degrees (generally south)
-            // If current state is not 2 (map was not previously facing south)
-            if (currentstate != 2) {
-
-              // Rotate each item by 180 degrees on the Z-axis
-              for (let index = 0; index < items.length; index++) {
-                const element = items[index];
-                element.rotateZ(Math.PI);
-              }
-            }
-            // Update current state to 2
-            currentstate = 2;
-          }
-        });
       });
     }
-
-    return () => {
-      // Clean up and release all internal resources associated
-      // if (map.current) map.current.remove();
-    };
   }, []);
 
   return (
