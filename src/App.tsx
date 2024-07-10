@@ -42,7 +42,7 @@ const polygonsCollection: any = {
     {
       type: "Feature",
       properties: {
-        image: "./sk.png",
+        image: "./nature.jpg",
         label: "Demo Label 1",
         color: "#87cefa",
         height: 3,
@@ -84,7 +84,7 @@ const polygonsCollection: any = {
     {
       type: "Feature",
       properties: {
-        image: "",
+        "image": "./rl.png",
         label: "Demo Label 2",
         color: "#2dcabd",
         height: 6,
@@ -181,7 +181,7 @@ function App() {
           // Calculate the centroid of the polygon
           const polygon = turf.polygon(coordinates);
           const centroid = turf.center(polygon).geometry.coordinates;
-  
+          centroid.push(feature.properties.height)
           const modelPosition = projectToWorld(centroid);
 
           const vertex1 = projectToWorld(coordinates[0][0]);
@@ -248,13 +248,14 @@ function App() {
             // Load Texture
             const textureLoader = new THREE.TextureLoader();
             textureLoader.load(feature.properties.image, (texture: THREE.Texture) => {
-  
             // Create a plane geometry and material with the loaded texture
             const geometry = new THREE.PlaneGeometry(texture.image.width, texture.image.height);
             geometry.computeBoundingBox();
-            const material = new THREE.MeshStandardMaterial({ map: texture,
+            const material = new THREE.MeshStandardMaterial({ 
+              map: texture,
               transparent: true, // Enable transparency
-              opacity: 1  });
+              opacity: 1  
+            });
             const plane = new THREE.Mesh(geometry, material);
 
             const group = new THREE.Group();
@@ -291,12 +292,13 @@ function App() {
             group.position.set(
               modelPosition.x,
               modelPosition.y,
-              feature.properties.height > 0 ? 0.08 : 0.01
+              modelPosition.z+0.01
             );
             items.push(group);
 
-  
             wrapper.current?.add(group);
+            // const light = new THREE.AmbientLight(0x404040, 30); // soft white light  
+            wrapper.current?.setEnvironment(null);
             });
           }
   
